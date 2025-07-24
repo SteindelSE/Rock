@@ -5514,6 +5514,50 @@ namespace Rock.Rest.v2
 
         #endregion
 
+        #region Group List
+
+        /// <summary>
+        /// Gets all groups.
+        /// </summary>
+        /// <param name="options">The options that describe which items to load.</param>
+        /// <returns>A List of <see cref="TreeItemBag"/> objects that represent the groups.</returns>
+        [HttpGet]
+        [Route( "GroupListGetGroups" )]
+        [Authenticate]
+        [ExcludeSecurityActions( Security.Authorization.EXECUTE_READ, Security.Authorization.EXECUTE_WRITE, Security.Authorization.EXECUTE_UNRESTRICTED_READ, Security.Authorization.EXECUTE_UNRESTRICTED_WRITE )]
+        [ProducesResponseType( HttpStatusCode.OK, Type = typeof( List<TreeItemBag> ) )]
+        [Rock.SystemGuid.RestActionGuid( "73a1667f-dfd5-4e48-9d64-5578f3a7e02d" )]
+        public IActionResult GroupListGetGroups( [FromUri] GroupListGetGroupsOptionsBag options )
+        {
+            using ( var rockContext = new RockContext() )
+            {
+                var groupService = new GroupService( rockContext );
+
+                var query = groupService.Queryable();
+
+                if ( options != null && options.IncludeInactiveGroups.HasValue )
+                {
+                    if ( !options.IncludeInactiveGroups.Value )
+                    {
+                        query = query.Where( g => g.IsActive == true );
+                    }
+                }
+
+                var groupList = query
+                    .Select( g => new
+                    {
+                        Guid = g.Guid,
+                        Name = g.Name,
+                        IsActive = g.IsActive,
+                    } )
+                    .ToList();
+
+                return Ok( groupList );
+            }
+        }
+
+        #endregion
+
         #region Group Member Picker
 
         /// <summary>
