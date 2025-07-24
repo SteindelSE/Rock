@@ -1,0 +1,29 @@
+<template>
+    <GalleryAndResult :value="value" :importCode="importCode" :exampleCode="exampleCode" enableReflection>
+
+        <GroupListPicker label="Groups" v-model="value" :includeInactiveGroups="includeInactiveGroups" />
+
+        <template #settings>
+            <div class="row">
+                <div class="col-md-4">
+                    <CheckBox v-model="includeInactiveGroups" label="Include Inactive Groups" />
+                </div>
+            </div>
+            <p class="text-semibold font-italic">All settings are demonstrated in this gallery.</p>
+            <p>Additional props extend and are passed to the underlying <code>BaseAsyncPicker</code>.</p>
+        </template>
+    </GalleryAndResult>
+</template>
+
+<script setup lang="ts">
+    import { ref } from "vue";
+    import GalleryAndResult from "./common/galleryAndResult.partial.obs";
+    import GroupListPicker from "@Obsidian/Controls/groupListPicker.obs";
+    import CheckBox from "@Obsidian/Controls/checkBox.obs";
+    import { getSfcControlImportPath } from "./common/utils.partial";
+
+    const value = ref(null);
+    const includeInactiveGroups = ref(false);
+    const importCode = getSfcControlImportPath("groupListPicker");
+    const exampleCode = `<GroupListPicker label="Groups" v-model="value" :includeInactiveGroups="includeInactiveGroups" />`;
+</script>
